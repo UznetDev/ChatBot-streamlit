@@ -44,7 +44,7 @@ def app():
 
     # Log In
     with cols[0].form(key='log_in'):
-        st.header(':blue[Sign] In')
+        st.header(':blue[Log] In')
         l_username = st.text_input("Username:", placeholder="Foydalanuvchi nomingizni kiriting")
         l_password = st.text_input("Password:", type="password", placeholder="Parolni kiriting")
         

@@ -22,6 +22,46 @@ def send_request(url, method='GET', data=None):
             return {"message": response.json()}, response.status_code
     except Exception as e:
         return {"message": str(e)}, 500
+    
+
+
+def send_request_with_files(url, method='GET', data=None, file=None, headers=None):
+    """
+    Fayl va boshqa ma'lumotlarni HTTP so'roviga yuborish uchun funktsiya.
+
+    Params:
+    - url (str): API endpoint manzili.
+    - method (str): HTTP usuli ('POST', 'GET', va h.k.).
+    - data (dict, optional): So'rovga yuboriladigan ma'lumotlar (JSON formatida).
+    - file (tuple, optional): Fayl (('field_name', file_object)).
+    - headers (dict, optional): So'rov uchun sarlavhalar.
+
+    Returns:
+    - response (dict): Javob ma'lumotlari yoki xato xabari.
+    - status_code (int): HTTP javob kodi.
+    """
+    try:
+        method = method.upper()
+        response = None
+
+        if method == 'POST':
+            response = requests.post(url, data=data, files=file, headers=headers)
+        else:
+            return {"message": "Fayllar faqat POST usulida yuborilishi mumkin."}, 400
+
+        if response.status_code in (200, 201):
+            return response.json(), response.status_code
+        else:
+            try:
+                error_message = response.json()
+            except ValueError:
+                error_message = response.text
+            return {"message": error_message}, response.status_code
+
+    except requests.exceptions.RequestException as e:
+        return {"message": f"Request error: {str(e)}"}, 500
+    except Exception as e:
+        return {"message": f"Unexpected error: {str(e)}"}, 500
 
 def set_cookie(key, value, days_expiry=2, path="/"):
     """

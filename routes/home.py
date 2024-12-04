@@ -7,11 +7,22 @@ from loader import cookie_controller
 
 def app(access_token):
     models, status = send_request(f"{BASE_API}/promts/get_models?access_token={access_token}")
-    st.write()
+    if status != 200:
+        st.error(f"Error: {models['detail']}")
+        return
+
+    if "start" not in st.session_state:
+        st.session_state.start = True
+        # st.stop()
+
     model_names = [item["name"] for item in models['models']]
     selected_model = st.sidebar.selectbox('Choose a model', model_names, key='selected_model')
     
     model_info, status = send_request(f"{BASE_API}/promts/get_model_info?access_token={access_token}&model_name={selected_model}")
+    if status != 200:
+        st.write(model_info)
+
+    st.write(model_info)
     description = model_info['model_data']['description']
     st.markdown(f':blue[{selected_model}] {description}')
     st.session_state.start = False
@@ -42,13 +53,20 @@ def app(access_token):
             res, _ = send_request(f"{BASE_API}/user/create_chat?access_token={access_token}&model_id={model_info['model_data']['id']}")
             if _ == 200:
                 st.session_state.chat_id = res['chat_id']
+            else:
+                st.write(res)
+                
 
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 url = f"{BASE_API}/promts/answer?question={prompt}&chat_id={st.session_state.chat_id}&access_token={access_token}&model_name={selected_model}"
                 response, status = send_request(url)
+                if status != 200:
+                    st.write(response)
+                st.write(response)
                 placeholder = st.empty()
                 full_response = ''
+                st.write(1)
                 if status == 200:
                     for item in response['answer']:
                         full_response += item
@@ -61,6 +79,11 @@ def app(access_token):
 
 
     chats, status = send_request(f"{BASE_API}/user/get_chats?access_token={access_token}")
+    if status != 200:
+        st.write(chats)
+        st.stop()
+
+    st.sidebar.markdown("### Chats")
     for chat in chats["chats"]:
         if st.sidebar.button(f"{chat['name']} ({chat['timestamp']})", key=f"btn_{chat['id']}"):
             clear_chat_history()
