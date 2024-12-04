@@ -20,7 +20,7 @@ footer = """
     }
     </style>
     <div class="footer">
-        <p>AdventureWorks Dashboard | Data Source: AdventureWorks Database | © 2024 UZNetDev <a href="https://github.com/UznetDev/AdventureWorks-Dashboard.git" target="_blank">GitHub</a></p>
+        <p>ChatBot | © 2024 UZNetDev <a href="https://github.com/UznetDev/AdventureWorks-Dashboard.git" target="_blank">GitHub</a></p>
     </div>
     """
 

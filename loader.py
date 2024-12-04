@@ -1,4 +1,3 @@
-from http.cookies import SimpleCookie
+from streamlit_cookies_controller import CookieController
 
-
-cookie = SimpleCookie()
+cookie_controller = CookieController()
