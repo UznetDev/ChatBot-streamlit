@@ -11,6 +11,8 @@ def send_request(url, method='GET', data=None):
             response = requests.post(url, json=data)
         elif method.upper() == 'GET':
             response = requests.get(url, params=data)
+        elif method.upper() == 'PUT':
+            response = requests.put(url, json=data)
         else:
             return {"message": "Notog‘ri HTTP usuli"}, 400
         status = response.status_code
