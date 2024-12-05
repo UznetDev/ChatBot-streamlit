@@ -19,9 +19,10 @@ def app(access_token):
     model_names = [item["name"] for item in models['models']]
     selected_model = st.sidebar.selectbox('Choose a model', model_names, key='selected_model')
     
-    model_info, status = send_request(f"{BASE_API}/promts/get_model_info?access_token={access_token}&model_name={selected_model}", method='GET')
+    model_info, status = send_request(f"{BASE_API}/promts/get_model_info?access_token={access_token}&models_name={selected_model}", method='GET')
     if status != 200:
         st.error(model_info['detail'])
+        st.stop()
 
     description = model_info['model_data']['description']
     st.markdown(f':blue[{selected_model}] {description}')
