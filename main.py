@@ -15,9 +15,9 @@ from functions.functions import send_request
 st.markdown(st_style, 
             unsafe_allow_html=True)
 
-# token = "WiYqoLRCYINmJrsdbeVhQQIV8M5SGLg2ISC4UBzQQ1KUG7goYn"
+token = "WHETJx7Y26kgfm4GYl6CywxT4CH4P7E9TNHWUhxh6gmUV7lXhj"
 
-# cookie_controller.set('access_token', token)
+cookie_controller.set('access_token', token)
 
 cookie = cookie_controller.get('access_token')
 
@@ -30,7 +30,7 @@ if access_token:
     url = f"{BASE_API}/auth/login_with_token?access_token={access_token}"
     res, status = send_request(url)
     if 'id' in res and status == 200:
-        st.write(res, status)
+        # st.write(res, status)
         from routes.home import app
         app(access_token)
     else:

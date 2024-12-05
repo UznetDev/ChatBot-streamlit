@@ -3,12 +3,13 @@ import streamlit.components.v1 as components
 from data.config import BASE_API
 from functions.functions import send_request
 from loader import cookie_controller
+import time
 
 
 def app(access_token):
-    models, status = send_request(f"{BASE_API}/promts/get_models?access_token={access_token}")
+    models, status = send_request(f"{BASE_API}/promts/get_models?access_token={access_token}", method="GET")
     if status != 200:
-        st.error(f"Error: {models['detail']}")
+        st.error(models['detail'])
         return
 
     if "start" not in st.session_state:
@@ -18,11 +19,10 @@ def app(access_token):
     model_names = [item["name"] for item in models['models']]
     selected_model = st.sidebar.selectbox('Choose a model', model_names, key='selected_model')
     
-    model_info, status = send_request(f"{BASE_API}/promts/get_model_info?access_token={access_token}&model_name={selected_model}")
+    model_info, status = send_request(f"{BASE_API}/promts/get_model_info?access_token={access_token}&model_name={selected_model}", method='GET')
     if status != 200:
-        st.write(model_info)
+        st.error(model_info['detail'])
 
-    st.write(model_info)
     description = model_info['model_data']['description']
     st.markdown(f':blue[{selected_model}] {description}')
     st.session_state.start = False
@@ -54,26 +54,25 @@ def app(access_token):
             if _ == 200:
                 st.session_state.chat_id = res['chat_id']
             else:
-                st.write(res)
+                st.error(res['detail'])
+                st.stop()
                 
 
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 url = f"{BASE_API}/promts/answer?question={prompt}&chat_id={st.session_state.chat_id}&access_token={access_token}&model_name={selected_model}"
-                response, status = send_request(url)
-                if status != 200:
-                    st.write(response)
-                st.write(response)
+                response, status = send_request(url, method='GET')
                 placeholder = st.empty()
                 full_response = ''
-                st.write(1)
                 if status == 200:
                     for item in response['answer']:
                         full_response += item
                         placeholder.markdown(full_response)
+                        time.sleep(0.01)
+
                     placeholder.markdown(full_response)
                 else:
-                    placeholder.markdown(f"Error: {response} {st.session_state.chat_id}")
+                    placeholder.markdown(f"Error: {response['detail']} {st.session_state.chat_id}")
         message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
 

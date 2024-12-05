@@ -1,5 +1,5 @@
 import streamlit as st
-from functions.functions import send_request_with_files
+from functions.functions import send_request
 from data.config import BASE_API
 from loader import cookie_controller
 
@@ -37,19 +37,17 @@ if submit_button:
             "max_tokens": max_tokens,
             "access_token": access_token,
         }
-        st.write(data)
         files = {"file": (file.name, file, "application/pdf")}
-        response, status_code = send_request_with_files(f"{BASE_API}/promts/upload/", method="POST", data=data, file=files)
+        response, status_code = send_request(url=f"{BASE_API}/promts/upload/", data=data, file=files)
 
-        st.write(response)
         if status_code == 200 and response['status_code'] == 200:
-            st.write(response)
             st.success(f"File uploaded successfully! Document ID: {response.get('doc_id')}")
-        elif response['status_code'] == 401:
-            st.error("Invalid access token. Please check your token and try again.")
-        elif response['status_code'] == 400:
-            st.error("Bad request. Please check your input data and try again.")
-        elif response['status_code'] == 500:
-            st.error("Internal server error. Please try again later.")
+        # elif status_code == 401:
+        #     st.error("Invalid access token. Please check your token and try again.")
+        # elif status_code == 400:
+        #     st.error("Bad request. Please check your input data and try again.")
+        # elif status_code == 500:
+        #     st.error("Internal server error. Please try again later.")
         else:
-            st.write(response)
+            st.error(response['detail'])
+            # pass

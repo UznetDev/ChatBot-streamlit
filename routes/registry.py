@@ -8,6 +8,7 @@ from loader import cookie_controller
 
 def app():
     # Sgn-Up
+    col = st.columns(1)
     cols = st.columns(2)
     with cols[1].form(key='signup_form'):
         st.header(':blue[Sign] In')
@@ -35,10 +36,11 @@ def app():
                 "surname": surname,
                 "api_key": api_key
             }
-            res, status = send_request(data=data, method='POST', url=f"{BASE_API}/auth/register")
+            res, status = send_request(data=data, url=f"{BASE_API}/auth/register")
             if status == 200 and 'access_token' in res:
                 cookie_controller.set('access_token', res['access_token'])
                 st.write('Kirish muvaffaqiyatliy buldi iltimos sahifani yangilang')
+                st.rerun()
             else:
                 cols[1].warning(res['message'])
 
@@ -59,9 +61,8 @@ def app():
                 "password": l_password
             }
             res, status = send_request(data=data, method='POST', url=f"{BASE_API}/auth/login")
-            st.write(res, status)
             if status == 200 and 'access_token' in res:
                 cookie_controller.set('access_token', res['access_token'])
-                st.write('Kirish muvaffaqiyatliy buldi iltimos sahifani yangilang')
+                col[0].write('Kirish muvaffaqiyatliy buldi iltimos sahifani yangilang')
             else:
-                cols[0].warning(res['message'])
+                cols[0].warning(res['detail'])
