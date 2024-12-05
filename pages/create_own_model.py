@@ -19,7 +19,6 @@ with st.form("upload_form"):
     system = st.text_input("System")
     visibility = st.checkbox("Visibility (Public)", value=False)
     max_tokens = st.number_input("Max Tokens", min_value=1, step=1)
-    # access_token = st.text_input("Access Token", type="password")
 
     submit_button = st.form_submit_button("Submit")
 if submit_button:
@@ -38,16 +37,9 @@ if submit_button:
             "access_token": access_token,
         }
         files = {"file": (file.name, file, "application/pdf")}
-        response, status_code = send_request(url=f"{BASE_API}/promts/upload/", data=data, file=files)
+        response, status_code = send_request(url=f"{BASE_API}/promts/upload_model/", data=data, file=files)
 
         if status_code == 200 and response['status_code'] == 200:
             st.success(f"File uploaded successfully! Document ID: {response.get('doc_id')}")
-        # elif status_code == 401:
-        #     st.error("Invalid access token. Please check your token and try again.")
-        # elif status_code == 400:
-        #     st.error("Bad request. Please check your input data and try again.")
-        # elif status_code == 500:
-        #     st.error("Internal server error. Please try again later.")
         else:
             st.error(response['detail'])
-            # pass

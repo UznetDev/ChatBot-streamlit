@@ -35,10 +35,14 @@ if access_token and status == 200:
         else:
             st.error("Error updating user")
             st.write(response)
+    if st.button("Log Out"):
+        cookie_controller.remove('access_token')
+        st.success("Log Out successfully, pleas reload page.")
+        
 else:
     st.write("You are not logged in")
     st.stop()
 
-if st.button("Logout"):
-    cookie_controller.remove('access_token')
-    # st.experimental_rerun()
+# if st.button("Logout"):
+#     cookie_controller.remove('access_token')
+#     # st.experimental_rerun()
