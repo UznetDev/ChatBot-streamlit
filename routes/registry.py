@@ -42,7 +42,7 @@ def app():
                 st.write('Kirish muvaffaqiyatliy buldi iltimos sahifani yangilang')
                 st.rerun()
             else:
-                cols[1].warning(res['message'])
+                cols[1].warning(res['detail'])
 
     # Log In
     with cols[0].form(key='log_in'):
