@@ -32,7 +32,6 @@ if access_token:
         from routes.registry import app
         app()
 else:
-    st.write("No access token found")
     from routes.registry import app
     app()
 
